@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<phpunit 
+	colors="true"
+	bootstrap="test/bootstrap.php"
+	cacheResult="false"
+	cacheTokens="false"
+	>
+    <testsuites>
+        <testsuite name="Cooler Router Tests">
+            <directory>./test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
+            <directory>./src</directory>
+            <exclude>
+                <directory>./test</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
