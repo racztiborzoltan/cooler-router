@@ -101,6 +101,7 @@ trait DynamicRouteTrait
     public function createRouteUri(ServerRequestInterface $request, array $route_parameters = []): UriInterface
     {
         $placeholder_names = $this->detectRoutePlaceholderNames();
+        $placeholder_names = array_combine($placeholder_names, $placeholder_names);
 
         foreach ($placeholder_names as $placeholder_name) {
             if (!isset($route_parameters[$placeholder_name])) {
