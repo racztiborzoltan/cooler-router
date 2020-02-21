@@ -94,7 +94,7 @@ class RouteCollection implements RouteInterface
     public function createUri(ServerRequestInterface $request, string $route_name, array $parameters = []): ?UriInterface
     {
         // This is very important!!!
-        $this->isProcessable($request);
+        $this->isProcessableRoute($request);
 
         $route = $this->getRoute($route_name);
 
@@ -120,7 +120,7 @@ class RouteCollection implements RouteInterface
         throw new \LogicException('route not found: "'.$route_name.'"');
     }
 
-    public function isProcessable(ServerRequestInterface $request): bool
+    public function isProcessableRoute(ServerRequestInterface $request): bool
     {
         foreach ($this->getRoutes() as $route) {
             /**
@@ -133,7 +133,7 @@ class RouteCollection implements RouteInterface
                 if ($route->getProcessableRoute($request)) {
                     return true;
                 }
-            } elseif ($route->isProcessable($request)) {
+            } elseif ($route->isProcessableRoute($request)) {
                 return true;
             }
         }
@@ -143,7 +143,7 @@ class RouteCollection implements RouteInterface
 
     public function getProcessableRoute(ServerRequestInterface $request): ?RouteInterface
     {
-        if (!$this->isProcessable($request)) {
+        if (!$this->isProcessableRoute($request)) {
             return null;
         }
 
@@ -164,7 +164,7 @@ class RouteCollection implements RouteInterface
                 }
                 unset($route_collection);
 
-            } elseif ($route->isProcessable($request)) {
+            } elseif ($route->isProcessableRoute($request)) {
 
                 return $route;
 

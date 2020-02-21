@@ -1,14 +1,15 @@
 <?php
 declare(strict_types=1);
 
+use PHPUnit\Framework\TestCase;
 use CoolerRouter\RouteCollection;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Test\TestRegexBasedRouteClass;
+use Test\TestDynamicRouteClass;
 
-final class CoolerRouterTest extends AbstractTest
+abstract class AbstractTest extends TestCase
 {
 
     /**
@@ -41,9 +42,9 @@ final class CoolerRouterTest extends AbstractTest
         //
         // route for main page
         //
-        $index_route = new TestRegexBasedRouteClass();
+        $index_route = new TestDynamicRouteClass();
         $index_route->setRouteName('index_page');
-        $index_route->setRouteRegexPattern('/');
+        $index_route->setRoutePattern('/');
         $index_route->setTestContent('INDEX ROUTE CONTENT');
         $index_route->setRouteHttpMethods(['get', 'POST']);
         $router->addRoute($index_route);
@@ -51,9 +52,9 @@ final class CoolerRouterTest extends AbstractTest
         //
         // route for contact page
         //
-        $contact_page_route = new TestRegexBasedRouteClass();
+        $contact_page_route = new TestDynamicRouteClass();
         $contact_page_route->setRouteName('contact_page');
-        $contact_page_route->setRouteRegexPattern('/contact');
+        $contact_page_route->setRoutePattern('/contact');
         $contact_page_route->setTestContent('CONTACT ROUTE CONTENT');
         $contact_page_route->setRouteHttpMethods(['get']);
         $router->addRoute($contact_page_route);
@@ -75,21 +76,21 @@ final class CoolerRouterTest extends AbstractTest
                 $group_is_processable = strpos($request->getUri()->getPath(), $group_path_pattern_prefix) === 0;
 
                 //
-                // index of blog
+                // Bejelentkezés képernyő
                 //
-                $blog_list_route = new TestRegexBasedRouteClass();
+                $blog_list_route = new TestDynamicRouteClass();
                 $blog_list_route->setRouteName('blog_index');
                 $blog_list_route->setTestContent('BLOG LIST ROUTE CONTENT');
-                $blog_list_route->setRouteRegexPattern($group_path_pattern_prefix . '-list');
+                $blog_list_route->setRoutePattern($group_path_pattern_prefix . '-list');
                 $blog_list_route->setRouteHttpMethods(['get']);
                 $this->addRoute($blog_list_route);
 
                 //
-                // blog list by date
+                // Dinamikus url
                 //
-                $test_route = new TestRegexBasedRouteClass();
+                $test_route = new TestDynamicRouteClass();
                 $test_route->setRouteName('blog_date_list');
-                $test_route->setRouteRegexPattern('/blog-<<year>>-<<month:\d\d>>-<<day:\d{2}>>');
+                $test_route->setRoutePattern('/blog-<<year>>-<<month:\d\d>>-<<day:\d{2}>>');
                 $test_route->setTestContent('BLOG DATE LIST ROUTE CONTENT');
                 $test_route->setRouteHttpMethods(['GET', 'post']);
                 $this->addRoute($test_route);
@@ -111,14 +112,12 @@ final class CoolerRouterTest extends AbstractTest
         $this->assertTrue($router->isProcessableRoute($request));
         $response = $router->process($request, $this->getRequestHandler());
         $this->assertEquals($router->getRoute('index_page')->getTestContent(), $response->getHeader('Test-Content')[0]);
-        
+
         // change request uri to contact page:
         $request = $request->withUri($request->getUri()->withPath('/contact'));
         $this->assertTrue($router->isProcessableRoute($request));
         $response = $router->process($request, $this->getRequestHandler());
         $this->assertEquals($router->getRoute('contact_page')->getTestContent(), $response->getHeader('Test-Content')[0]);
-        
-        return;
 
         // change request uri to not existed page:
         $request = $request->withUri($request->getUri()->withPath('/sure-not-exists'));

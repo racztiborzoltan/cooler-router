@@ -31,7 +31,7 @@ interface RouteInterface extends MiddlewareInterface
      * @param ServerRequestInterface $request
      * @return bool
      */
-    public function isProcessable(ServerRequestInterface $request): bool;
+    public function isProcessableRoute(ServerRequestInterface $request): bool;
 
     /**
      * Create UriInterface object from route

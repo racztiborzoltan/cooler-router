@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Test;
 
 use CoolerRouter\RouteInterface;
-use CoolerRouter\DynamicRouteTrait;
+use CoolerRouter\RegexBasedRouteTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -33,7 +34,7 @@ class SimpleRouteClass implements RouteInterface
         return 'simple_route_name';
     }
 
-    public function isProcessable(ServerRequestInterface $request): bool
+    public function isProcessableRoute(ServerRequestInterface $request): bool
     {
         $path = $request->getUri()->getPath();
         return $path == $this->_url_path;
@@ -45,7 +46,7 @@ class SimpleRouteClass implements RouteInterface
         return $factory->createUri($this->_url_path);
     }
 
-    public function process(ServerRequestInterface$request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = (new Psr17Factory())->createResponse();
         $response->getBody()->write('request handled in :' . __METHOD__);
@@ -53,12 +54,12 @@ class SimpleRouteClass implements RouteInterface
     }
 }
 
-class DynamicRouteClass implements RouteInterface
+class RegexBasedRouteClass implements RouteInterface
 {
 
-    use DynamicRouteTrait;
+    use RegexBasedRouteTrait;
 
-    public function process(ServerRequestInterface$request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = (new Psr17Factory())->createResponse();
         $response->getBody()->write(__METHOD__);
@@ -66,11 +67,12 @@ class DynamicRouteClass implements RouteInterface
     }
 }
 
+header('Content-Type: text/plain');
+
 $simple_route = new SimpleRouteClass();
-$dynamic_route = new DynamicRouteClass();
-$dynamic_route->setRoutePattern('dynamic-router');
+$dynamic_route = new RegexBasedRouteClass();
 $dynamic_route->setRouteName('blog_date_list');
-$dynamic_route->setRoutePattern('/dynamic-<<name>>-<<id:\d+>>');
+$dynamic_route->setRouteRegexPattern('/dynamic-(?<name>\w+)-(?<id>\d+)');
 $dynamic_route->setRouteHttpMethods(['GET', 'post']);
 
 $collection = new RouteCollection();
@@ -78,19 +80,41 @@ $collection->addRoute($simple_route);
 $collection->addRoute($dynamic_route);
 
 $factory = new Psr17Factory();
-$request = $factory->createServerRequest('get', '/simple-route-url-df');
-$response = $collection->process(
-    $request,
-    new class implements RequestHandlerInterface {
-        public function handle(ServerRequestInterface $request): ResponseInterface
-        {
-            $response = (new Psr17Factory())->createResponse();
-            $response->getBody()->write('REQUEST FAILED - ROUTE NOF FOUND');
-            $response = $response->withStatus(404);
-            $response = $response->withHeader('Content-Type', 'text/plain');
-            return $response;
-        }
-    }
-);
 
-echo $response->getBody();
+$test_route_paths = [
+    '/page-not-found',
+    '/simple-route-url',
+    '/dynamic-test-122',
+];
+
+foreach ($test_route_paths as $test_route_path) {
+    $request = $factory->createServerRequest('get', $test_route_path);
+
+    $response = $collection->process(
+        $request,
+        new class implements RequestHandlerInterface
+        {
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                $response = (new Psr17Factory())->createResponse();
+                $response->getBody()->write('REQUEST FAILED - ROUTE NOF FOUND');
+                $response = $response->withStatus(404);
+                return $response->withHeader('Content-Type', 'text/plain');
+            }
+        }
+    );
+
+    echo str_repeat('=', 80);
+    echo PHP_EOL;
+    echo PHP_EOL;
+    echo 'URL: ' . $request->getUri();
+    echo PHP_EOL;
+    echo PHP_EOL;
+    echo 'RESPONSE: ';
+    echo PHP_EOL;
+    echo $response->getBody();
+    echo PHP_EOL;
+    echo str_repeat('=', 80);
+    echo PHP_EOL;
+    echo PHP_EOL;
+}
