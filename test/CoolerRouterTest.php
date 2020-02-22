@@ -62,7 +62,6 @@ final class CoolerRouterTest extends AbstractTest
         // route group for blog pages
         //
         $router->addRoute(new class extends RouteCollection {
-
             public function getCollectionName(): ?string
             {
                 return 'blog_route_group';

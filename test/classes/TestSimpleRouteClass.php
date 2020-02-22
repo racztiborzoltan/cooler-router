@@ -11,7 +11,6 @@ use Psr\Http\Message\UriInterface;
 
 class TestSimpleRouteClass implements RouteInterface
 {
-
     private $_route_name = null;
 
     public function setRouteName(string $route_name): RouteInterface

@@ -8,7 +8,6 @@ use CoolerRouter\RegexBasedRouteTrait;
 
 class TestRegexBasedRouteClass implements RouteInterface
 {
-
     use TestRouteClassTrait;
     use RegexBasedRouteTrait;
 }

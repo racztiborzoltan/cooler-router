@@ -13,7 +13,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RegexBasedRoute implements RouteInterface
 {
-
     use RegexBasedRouteTrait;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

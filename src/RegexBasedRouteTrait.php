@@ -16,7 +16,6 @@ use Psr\Http\Message\UriInterface;
  */
 trait RegexBasedRouteTrait
 {
-
     private $_route_name = null;
 
     /**
@@ -97,7 +96,7 @@ trait RegexBasedRouteTrait
         );
 
         $return = [];
-        foreach($placeholder_info as $info) {
+        foreach ($placeholder_info as $info) {
             $return[$info['placeholder_name']] = [
                 'name' => $info['placeholder_name'],
                 'regex' => $info['placeholder_regex'],
@@ -113,7 +112,7 @@ trait RegexBasedRouteTrait
             } else {
                 $matches = [];
             }
-            foreach($return as &$temp) {
+            foreach ($return as &$temp) {
                 if (isset($matches[$temp['name']])) {
                     $temp['match'] = $matches[$temp['name']];
                 }
@@ -175,7 +174,6 @@ trait RegexBasedRouteTrait
         $preg_replacements = [];
 
         foreach ($placeholder_informations as $placeholder_information) {
-
             if (!array_key_exists($placeholder_information['name'], $route_parameters)) {
                 continue;
             }

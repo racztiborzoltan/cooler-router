@@ -10,7 +10,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class RouteCollection implements RouteInterface
 {
-
     private $_collection_name = null;
 
     private $_routes = [];
@@ -151,7 +150,6 @@ class RouteCollection implements RouteInterface
          * @var RouteInterface $route
          */
         foreach ($this->getRoutes() as $route) {
-
             if ($route instanceof RouteCollection) {
 
                 /**
@@ -163,11 +161,8 @@ class RouteCollection implements RouteInterface
                     return $route_collection_processable_route;
                 }
                 unset($route_collection);
-
             } elseif ($route->isProcessableRoute($request)) {
-
                 return $route;
-
             }
         }
         unset($route);

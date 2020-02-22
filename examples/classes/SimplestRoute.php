@@ -13,7 +13,6 @@ use Psr\Http\Message\UriInterface;
 
 class SimplestRoute implements RouteInterface
 {
-
     private $_route_name = null;
 
     public function setRouteName(string $name): RouteInterface

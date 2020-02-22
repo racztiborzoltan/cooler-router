@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 
 trait TestRouteClassTrait
 {
-
     private $_test_content = null;
 
     public function setTestContent(string $test_content)
