@@ -19,7 +19,10 @@ trait RegexBasedRouteTrait
 
     private $_route_name = null;
 
-    private $_route_http_methods = [];
+    /**
+     * @var iterable
+     */
+    private $_route_http_methods = null;
 
     private $_route_regex_pattern = null;
 
@@ -45,7 +48,9 @@ trait RegexBasedRouteTrait
         //
         $http_method = strtoupper($request->getMethod());
 
-        if (!in_array($http_method, $this->getRouteHttpMethods())) {
+        $route_http_methods = $this->getRouteHttpMethods();
+
+        if (is_iterable($route_http_methods) && !in_array($http_method, (array)$route_http_methods)) {
             return false;
         }
 
@@ -85,8 +90,8 @@ trait RegexBasedRouteTrait
         // (?'name'regex)
         $placeholder_info = [];
         preg_match_all(
-            '#'.$this->_createPlaceholderRegexPattern('\w+', '.*?').'#mx', 
-            $route_regex_pattern, 
+            '#'.$this->_createPlaceholderRegexPattern('\w+', '.*?').'#mx',
+            $route_regex_pattern,
             $placeholder_info,
             PREG_SET_ORDER
         );
@@ -168,23 +173,23 @@ trait RegexBasedRouteTrait
 
         $preg_replace_patterns = [];
         $preg_replacements = [];
-        
+
         foreach ($placeholder_informations as $placeholder_information) {
 
             if (!array_key_exists($placeholder_information['name'], $route_parameters)) {
                 continue;
             }
-            
+
             $preg_replace_patterns[] = '#'.$this->_createPlaceholderRegexPattern($placeholder_information['name'], $placeholder_information['regex'], true).'#mx';
             $preg_replacements[] = $route_parameters[$placeholder_information['name']];
         }
-        
+
         $preg_replace_patterns[] = '#^'.preg_quote($this->getRouteRegexPatternPrefix()).'#mx';
         $preg_replacements[] = '';
 
         $preg_replace_patterns[] = '#'.preg_quote($this->getRouteRegexPatternPostfix()).'$#mx';
         $preg_replacements[] = '';
-        
+
         $url = preg_replace(
             $preg_replace_patterns,
             $preg_replacements,
@@ -218,9 +223,13 @@ trait RegexBasedRouteTrait
         return $this;
     }
 
-    public function getRouteHttpMethods(): iterable
+    public function getRouteHttpMethods(): ?iterable
     {
-        return array_values($this->_route_http_methods);
+        if (!is_iterable($this->_route_http_methods)) {
+            return null;
+        }
+
+        return is_iterable($this->_route_http_methods) ? array_values((array)$this->_route_http_methods) : null;
     }
 
     public function clearRouteHttpMethods()

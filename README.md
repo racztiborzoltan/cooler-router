@@ -5,13 +5,13 @@
 
 Simple but not standard-thinking routing based on PSR-7. (At least, I think.)
 
-## Some feature 
+## Some feature
 
 - route reversing, create uri from route
-- route processable checking 
+- route processable checking
 - route collecting
 - route grouping
-- route pattern support by DynamicRouteTrait class
+- route pattern support by RegexBasedRouteTrait class
 
 
 ## Why not a main stream?
@@ -22,4 +22,13 @@ Simple but not standard-thinking routing based on PSR-7. (At least, I think.)
     - processable checking
     - route reversing, uri creating
     - ... business logic
+
+
+# Example
+
+[\Example\SimplestRoute](examples/classes/SimplestRoute.php)
+
+[\Example\RegexBasedRoute](examples/classes/RegexBasedRoute.php)
+
+[example.php](examples/example.php)
 
