@@ -1,6 +1,6 @@
 {
-    "name": "racztiborzoltan/cooler-router",
-    "description": "Simple PSR-7 based router",
+    "name": "racztiborzoltan/other-router",
+    "description": "Other PSR-7 based router",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CoolerRouter\\": "src"
+            "OtherRouter\\": "src"
         }
     }
 }

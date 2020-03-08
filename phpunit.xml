@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <phpunit 
 	colors="true"
-	bootstrap="test/bootstrap.php"
+	bootstrap="tests/bootstrap.php"
 	cacheResult="false"
 	cacheTokens="false"
 	>
     <testsuites>
-        <testsuite name="Cooler Router Tests">
-            <directory>./test</directory>
+        <testsuite name="Other Router Tests">
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">
             <directory>./src</directory>
             <exclude>
-                <directory>./test</directory>
+                <directory>./tests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>

@@ -1,5 +1,5 @@
 
-# Cooler Router
+# Other Router
 
 ***THIS PACKAGE IS UNDER DEVELOPMENT!!!***
 
@@ -22,13 +22,13 @@ Simple but not standard-thinking routing based on PSR-7. (At least, I think.)
     - processable checking
     - route reversing, uri creating
     - ... business logic
-
+- You can think of each implemented route as a controller
 
 # Example
 
-[\Example\SimplestRoute](examples/classes/SimplestRoute.php)
-
-[\Example\RegexBasedRoute](examples/classes/RegexBasedRoute.php)
-
 [example.php](examples/example.php)
 
+
+#### English language
+
+My English is under continuous development!

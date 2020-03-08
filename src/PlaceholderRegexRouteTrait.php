@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CoolerRouter;
+namespace OtherRouter;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -43,21 +43,8 @@ use Psr\Http\Message\UriInterface;
  * @author Rácz Tibor Zoltán <racztiborzoltan@gmail.com>
  *
  */
-trait PlaceholderRegexBasedRouteTrait
+trait PlaceholderRegexRouteTrait
 {
-
-    private $_route_name = null;
-
-    public function setRouteName(string $route_name): RouteInterface
-    {
-        $this->_route_name = $route_name;
-        return $this;
-    }
-
-    public function getRouteName(): ?string
-    {
-        return $this->_route_name;
-    }
 
     /**
      * @var iterable
@@ -230,7 +217,7 @@ trait PlaceholderRegexBasedRouteTrait
         return $placeholder_values;
     }
 
-    public function isProcessableRoute(ServerRequestInterface $request): bool
+    public function isProcessable(ServerRequestInterface $request): bool
     {
         //
         // Check http method:
@@ -249,7 +236,7 @@ trait PlaceholderRegexBasedRouteTrait
         return (bool)preg_match($regex, $path);
     }
 
-    public function createRouteUri(ServerRequestInterface $request, array $route_parameters = []): UriInterface
+    public function createRequest(ServerRequestInterface $request): ServerRequestInterface
     {
         // refilling the placeholder informations:
         $this->_getRoutePatternRegex();
@@ -260,6 +247,7 @@ trait PlaceholderRegexBasedRouteTrait
 
         $path = $route_pattern;
 
+        $route_parameters = $request->getAttributes();
         foreach (array_keys($route_parameters) as $route_parameter_name) {
             if (!isset($this->_placeholders[$route_parameter_name])) {
                 throw new \LogicException('In this route is not presented the following route parameter: ' . $route_parameter_name);
@@ -291,6 +279,6 @@ trait PlaceholderRegexBasedRouteTrait
             $path = preg_replace('#'.preg_quote($placeholder['pattern']).'#', $route_parameters[$placeholder['name']], $path);
         }
 
-        return $uri->withPath($path);
+        return $request->withUri($uri->withPath($path));
     }
 }
