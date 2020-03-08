@@ -97,8 +97,6 @@ foreach ($example_list as $example) {
         $route_parameters = [];
     }
 
-    $response = $route_collection->process($example_request, new RouteNotFoundController());
-
     $processable_route = $route_collection->getProcessableRoute($example_request);
 
     echo str_repeat('=', 80);
@@ -110,10 +108,11 @@ foreach ($example_list as $example) {
     echo 'IS_PROCESSABLE FROM ROUTE COLLECTION: ' . ($route_collection->isProcessable($example_request) ? 'TRUE' : 'FALSE');
     echo PHP_EOL;
     echo PHP_EOL;
-    echo 'RESPONSE: ';
-    echo PHP_EOL;
-    echo $response->getBody();
-    echo PHP_EOL;
+    if ($processable_route) {
+        echo 'PROCESSABLE ROUTE CLASS NAME: ';
+        echo get_class($processable_route);
+        echo PHP_EOL;
+    }
     foreach ($route_parameters as $route_parameter_name => $route_parameter_value) {
         $example_request = $example_request->withAttribute($route_parameter_name, $route_parameter_value);
     }
@@ -125,7 +124,7 @@ foreach ($example_list as $example) {
     }
     if ($processable_route) {
         echo PHP_EOL;
-        echo 'CREATED URL FROM ROUTE COLLECTION:' . $route_collection->createRequest($example_request, $route_parameters)->getUri();
+        echo 'CREATED URL FROM ROUTE COLLECTION: ' . $route_collection->createRequest($example_request, $route_parameters)->getUri();
         echo PHP_EOL;
     }
     echo str_repeat('=', 80);

@@ -10,12 +10,10 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {
+    "require-dev": {
         "psr/http-message": "^1.0",
         "psr/http-server-middleware": "^1.0",
-        "psr/http-server-handler": "^1.0"
-    },
-    "require-dev": {
+        "psr/http-server-handler": "^1.0",
         "phpunit/phpunit": "8",
         "nyholm/psr7": "^1.2"
     },

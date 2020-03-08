@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace OtherRouter;
 
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface RouteInterface extends MiddlewareInterface
+interface RouteInterface
 {
 
     /**

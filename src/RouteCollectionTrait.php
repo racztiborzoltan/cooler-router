@@ -4,8 +4,6 @@ declare(strict_types=1);
 namespace OtherRouter;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseInterface;
 
 trait RouteCollectionTrait
 {
@@ -81,17 +79,6 @@ trait RouteCollectionTrait
             $request = $processable_route->createRequest($request);
         }
         return $request;
-    }
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        $matched_route = $this->getProcessableRoute($request);
-
-        if ($matched_route) {
-            return $matched_route->process($request, $handler);
-        }
-
-        return $handler->handle($request);
     }
 
     public function getProcessableRoute(ServerRequestInterface $request): ?RouteInterface

@@ -3,7 +3,8 @@
 
 ***THIS PACKAGE IS UNDER DEVELOPMENT!!!***
 
-Simple but not standard-thinking routing based on PSR-7. (At least, I think.)
+Simple but not standard-thinking routing. (At least, I think.)
+
 
 ## Some feature
 
@@ -12,6 +13,7 @@ Simple but not standard-thinking routing based on PSR-7. (At least, I think.)
 - route collecting
 - route grouping
 - route pattern support by RegexBasedRouteTrait class
+- with or without PSR-7 (See the example how attach PSR-7 and PSR-15)
 
 
 ## Why not a main stream?
