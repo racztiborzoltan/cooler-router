@@ -4,7 +4,6 @@ declare(strict_types=1);
 use Example\RouteCollection;
 use Example\StaticUriRouteController;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Example\RouteNotFoundController;
 use Example\PlaceholderRegexRouteController;
 use Psr\Http\Message\ServerRequestInterface;
 use Example\HttpMethodRouteController;
