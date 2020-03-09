@@ -62,7 +62,7 @@ $route_collection->addRoute($composite_route);
 
 
 $example_list = [
-    $http_factory->createServerRequest('get', '/route-not-found'),
+    $http_factory->createServerRequest('get', '/is-not-processable'),
     $http_factory->createServerRequest('get', '/static-route-url'),
     $http_factory->createServerRequest('pUT', '/put-http-method-route-example'),
     $http_factory->createServerRequest('DeleTE', '/delete-http-method-route-example'),
@@ -122,6 +122,8 @@ foreach ($example_list as $example) {
         echo PHP_EOL;
     }
     if ($processable_route) {
+        echo PHP_EOL;
+        echo 'CREATED URL FROM ROUTE: ' . $processable_route->createRequest($example_request, $route_parameters)->getUri();
         echo PHP_EOL;
         echo 'CREATED URL FROM ROUTE COLLECTION: ' . $route_collection->createRequest($example_request, $route_parameters)->getUri();
         echo PHP_EOL;

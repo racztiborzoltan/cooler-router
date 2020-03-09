@@ -30,7 +30,7 @@ trait RouteCollectionTrait
             /**
              * @var RouteInterface $route
              */
-            if ($route instanceof RouteCollectionTrait) {
+            if (static::_isInstanceOfRouteCollectionTrait($route)) {
                 /**
                  * @var RouteCollectionTrait $route_collection
                  */
@@ -83,31 +83,78 @@ trait RouteCollectionTrait
 
     public function getProcessableRoute(ServerRequestInterface $request): ?RouteInterface
     {
-        if (!$this->isProcessable($request)) {
-            return null;
-        }
-
         /**
          * @var RouteInterface $route
          */
         foreach ($this->getRoutes() as $route) {
-            if ($route instanceof RouteCollectionTrait) {
-
-                /**
-                 * @var RouteCollectionTrait $route_collection
-                 */
-                $route_collection = $route;
-                $route_collection_processable_route = $route_collection->getProcessableRoute($request);
-                if ($route_collection_processable_route) {
-                    return $route_collection_processable_route;
-                }
-                unset($route_collection);
-            } elseif ($route->isProcessable($request)) {
+            if ($route->isProcessable($request)) {
                 return $route;
             }
         }
         unset($route);
 
         return null;
+
+        if ($this->isProcessable($request)) {
+
+//             /**
+//              * @var RouteInterface $route
+//              */
+//             foreach ($this->getRoutes() as $route) {
+//                 if (static::_isInstanceOfRouteCollectionTrait($route)) {
+
+//                     /**
+//                      * @var RouteCollectionTrait $route_collection
+//                      */
+//                     $route_collection = $route;
+//                     $route_collection_processable_route = $route_collection->getProcessableRoute($request);
+//                     if ($route_collection_processable_route) {
+//                         return $route_collection_processable_route;
+//                     }
+//                     unset($route_collection);
+//                 } elseif ($route->isProcessable($request)) {
+//                     return $route;
+//                 }
+//             }
+//             unset($route);
+
+        }
+
+        return null;
+    }
+
+    protected static function _isInstanceOfRouteCollectionTrait($object): bool
+    {
+        return array_key_exists(explode('::', __METHOD__)[0], static::_getTraitList($object));
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/function.class-uses.php#122427
+     *
+     * @param object $class
+     * @param boolean $autoload
+     * @return array
+     */
+    protected static function _getTraitList($class, $autoload = true)
+    {
+        $traits = [];
+
+        // Get all the traits of $class and its parent classes
+        do {
+            $class_name = is_object($class)? get_class($class): $class;
+            if (class_exists($class_name, $autoload)) {
+                $traits = array_merge(class_uses($class, $autoload), $traits);
+            }
+        } while ($class = get_parent_class($class));
+
+        // Get traits of all parent traits
+        $traits_to_search = $traits;
+        while (!empty($traits_to_search)) {
+            $new_traits = class_uses(array_pop($traits_to_search), $autoload);
+            $traits = array_merge($new_traits, $traits);
+            $traits_to_search = array_merge($new_traits, $traits_to_search);
+        };
+
+        return array_unique($traits);
     }
 }
