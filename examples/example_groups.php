@@ -7,6 +7,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use Example\RouteGroup;
 use Example\PlaceholderRegexRouteController;
+use OtherRouter\RouteInterface;
 
 $composer = include __DIR__ . '/../vendor/autoload.php';
 $composer->addPsr4('Example\\', __DIR__ . '/classes');
@@ -69,7 +70,6 @@ $route_group = new class extends RouteGroup {
     public function upRequest(ServerRequestInterface $request): ServerRequestInterface
     {
         $uri_postfix = $this->_url_postfix;
-
         if (strpos(strrev($request->getUri()->getPath()), strrev($uri_postfix)) === 0) {
             // Remove the url postfix from request uri:
             $uri = $request->getUri();
@@ -99,7 +99,7 @@ unset($route_group);
 $example_list = [
     $http_factory->createServerRequest('get', '/hu/blog/list'),
     [
-        'request' => $http_factory->createServerRequest('get', '/blog/list/5'),
+        'request' => $http_factory->createServerRequest('get', '/hu/blog/list/5'),
         'route_parameters' => [
             'page' => 10
         ],
@@ -151,16 +151,34 @@ foreach ($example_list as $example) {
         unset($route_parameter_name, $route_parameter_value);
 
         echo PHP_EOL;
-        echo 'CREATED URL:' . $processable_route->createRequest($example_request, $route_parameters)->getUri();
+        echo 'CREATED URL FROM PROCESSABLE ROUTE:' . $processable_route->createRequest($example_request, $route_parameters)->getUri();
         echo PHP_EOL;
 
         echo PHP_EOL;
         echo 'CREATED URL FROM ROUTE COLLECTION: ' . $route_collection->createRequest($example_request, $route_parameters)->getUri();
         echo PHP_EOL;
 
-        echo PHP_EOL;
-        echo 'CREATED URL FROM ROUTE GROUP: ' . $route_collection->getRoute('route_group_1')->createRequest($example_request, $route_parameters)->getUri();
-        echo PHP_EOL;
+        foreach ($route_collection->getRoutes() as $route_collection_route) {
+            if ($route_collection_route instanceof RouteGroup) {
+                /**
+                 * @var RouteGroup $route_group_in_collection
+                 */
+                $route_group_in_collection = $route_collection_route;
+                foreach ($route_group_in_collection->getRoutes() as $route_group_route) {
+                    /**
+                     * @var RouteInterface $route_group_route
+                     */
+                    if ($processable_route == $route_group_route) {
+                        echo PHP_EOL;
+                        echo 'CREATED URL FROM ROUTE GROUP: ' . $route_group_in_collection->createRequest($example_request, $route_parameters)->getUri();
+                        echo PHP_EOL;
+                    }
+                }
+                unset($route_group_in_collection, $route_group_route);
+            }
+            unset($route_collection_route);
+        }
+
     }
     echo str_repeat('=', 80);
     echo PHP_EOL;

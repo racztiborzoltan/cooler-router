@@ -73,11 +73,16 @@ trait RouteCollectionTrait
 
     public function createRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $processable_route = $this->getProcessableRoute($request);
-
-        if ($processable_route) {
-            $request = $processable_route->createRequest($request);
+        /**
+         * @var RouteInterface $route
+         */
+        foreach ($this->getRoutes() as $route) {
+            if ($route->isProcessable($request)) {
+                return $route->createRequest($request);
+            }
         }
+        unset($route);
+
         return $request;
     }
 
@@ -87,38 +92,22 @@ trait RouteCollectionTrait
          * @var RouteInterface $route
          */
         foreach ($this->getRoutes() as $route) {
-            if ($route->isProcessable($request)) {
+            if (static::_isInstanceOfRouteCollectionTrait($route)) {
+
+                /**
+                 * @var RouteCollectionTrait $route_collection
+                 */
+                $route_collection = $route;
+                $route_collection_processable_route = $route_collection->getProcessableRoute($request);
+                if ($route_collection_processable_route) {
+                    return $route_collection_processable_route;
+                }
+                unset($route_collection);
+            } elseif ($route->isProcessable($request)) {
                 return $route;
             }
         }
         unset($route);
-
-        return null;
-
-        if ($this->isProcessable($request)) {
-
-//             /**
-//              * @var RouteInterface $route
-//              */
-//             foreach ($this->getRoutes() as $route) {
-//                 if (static::_isInstanceOfRouteCollectionTrait($route)) {
-
-//                     /**
-//                      * @var RouteCollectionTrait $route_collection
-//                      */
-//                     $route_collection = $route;
-//                     $route_collection_processable_route = $route_collection->getProcessableRoute($request);
-//                     if ($route_collection_processable_route) {
-//                         return $route_collection_processable_route;
-//                     }
-//                     unset($route_collection);
-//                 } elseif ($route->isProcessable($request)) {
-//                     return $route;
-//                 }
-//             }
-//             unset($route);
-
-        }
 
         return null;
     }
