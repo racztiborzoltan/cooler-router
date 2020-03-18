@@ -151,7 +151,7 @@ trait PlaceholderRegexRouteTrait
             if (isset($this->_placeholders[$placeholder_name]['regex'])) {
                 $placeholder_regex = $this->_placeholders[$placeholder_name]['regex'];
             } else {
-                $placeholder_regex = '.+';
+                $placeholder_regex = '.+?';
             }
             $placeholder_regex = '(' . $placeholder_regex  . ')';
 
